@@ -1,0 +1,9 @@
+{
+  "appId": "com.blackjackroyale.game",
+  "appName": "Blackjack Royale",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}
