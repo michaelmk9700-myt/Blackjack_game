@@ -24,11 +24,18 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Use preinstalled Android SDK
+        shell: bash
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          sdkmanager --version
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          MANAGER="$SDK/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$MANAGER" ]; then
+            MANAGER="$(find "$SDK/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          fi
+          test -x "$MANAGER"
+          echo "$(dirname "$MANAGER")" >> "$GITHUB_PATH"
+          "$MANAGER" --version
+          yes | "$MANAGER" --licenses >/dev/null || true
+          "$MANAGER" "platforms;android-35" "build-tools;35.0.0"
       - run: npm install
       - run: mkdir -p www && cp index.html www/index.html
       - run: npx cap add android
